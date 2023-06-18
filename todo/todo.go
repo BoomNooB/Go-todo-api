@@ -1,9 +1,7 @@
 package todo //ชื่อควรเหมือนกันหมด ณ ที่นี้คือ todo หมดเลย
 
 import (
-	"API/auth"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -31,14 +29,6 @@ func NewTodoHandler(db *gorm.DB) *TodoHandler {
 }
 
 func (t *TodoHandler) NewTask(c *gin.Context) {
-	s := c.Request.Header.Get("Authorization")
-	tokenString := strings.TrimPrefix(s, "Bearer ")
-
-	if err := auth.Protect(tokenString); err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
-	}
-
 	var todo Todo // var var-name type
 	if err := c.ShouldBindJSON(&todo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
