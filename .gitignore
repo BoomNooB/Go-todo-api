@@ -1,2 +1,3 @@
-test.db/
+todo/test.db/
 *.db
+local.env
