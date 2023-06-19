@@ -44,6 +44,7 @@ func main() {
 		log.Printf("please provide your env file: %s", err)
 	}
 	fmt.Println(os.Getenv("SIGN"))
+	fmt.Println(os.Getenv("DB_CONN"))
 
 	db, err := gorm.Open(mysql.Open(os.Getenv("DB_CONN")), &gorm.Config{})
 	if err != nil {
