@@ -19,7 +19,7 @@ type Todo struct {
 // }
 
 func (Todo) TableName() string {
-	return "to-do list" //ตั้งชื่อแล้วแต่เรา แบบนี้ก็ตั้งได้
+	return "todolist" //ตั้งชื่อแล้วแต่เรา แบบนี้ก็ตั้งได้
 }
 
 type TodoHandler struct {
@@ -84,6 +84,8 @@ func (t *TodoHandler) Remove(c *gin.Context) {
 	idParam := c.Param("id") // ตัวนี้รับมาเป็น string
 	// แต่ใน db มันเป็นเลข เราต้อง convert type ก่อน
 	id, err := strconv.Atoi(idParam)
+	log.Println(id)
+	log.Println(err)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
