@@ -25,7 +25,20 @@ var (
 )
 
 func main() {
-	err := godotenv.Load("local.env")
+	//Liveness
+
+	err := os.MkdirAll("tmp", os.ModePerm)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = os.Create("tmp/live")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer os.Remove("tmp/live")
+
+	err = godotenv.Load("local.env")
 	if err != nil {
 		log.Printf("please provide your env file: %s", err)
 	}
@@ -39,6 +52,12 @@ func main() {
 	db.AutoMigrate(&todo.Todo{})
 
 	r := gin.Default()
+
+	//Readiness
+	r.GET("/healthz", func(c *gin.Context) {
+		c.Status(200)
+	})
+
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
