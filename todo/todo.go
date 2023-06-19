@@ -64,3 +64,17 @@ func (t *TodoHandler) NewTask(c *gin.Context) {
 	})
 
 }
+
+// หน้าที่ของอันนี้คือ ไป query ของจาก db แล้วเอาไปส่งหน้าบ้าน
+func (t *TodoHandler) List(c *gin.Context) {
+	var todos []Todo
+	r := t.db.Find(&todos)
+	if err := r.Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, todos)
+}

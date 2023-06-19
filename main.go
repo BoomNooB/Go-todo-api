@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"golang.org/x/time/rate"
@@ -54,6 +55,18 @@ func main() {
 	db.AutoMigrate(&todo.Todo{})
 
 	r := gin.Default()
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{
+		"http://localhost:8080", //Front-end path
+	}
+
+	config.AllowHeaders = []string{
+		"Origin",
+		"Authorization",
+		"TransactionID",
+	}
+
+	r.Use(cors.New(config))
 
 	//Readiness
 	r.GET("/healthz", func(c *gin.Context) {
@@ -81,6 +94,9 @@ func main() {
 
 	handler := todo.NewTodoHandler(db)
 	protected.POST("/todos", handler.NewTask)
+
+	// เพิ่ม get route เพื่อ handle หน้าบ้าน
+	protected.GET("/todos", handler.List)
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
