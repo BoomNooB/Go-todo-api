@@ -98,6 +98,9 @@ func main() {
 	// เพิ่ม get route เพื่อ handle หน้าบ้าน
 	protected.GET("/todos", handler.List)
 
+	// add delete route path
+	protected.DELETE("/todos:id", handler.Remove)
+
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
