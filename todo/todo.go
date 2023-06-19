@@ -1,6 +1,7 @@
 package todo //ชื่อควรเหมือนกันหมด ณ ที่นี้คือ todo หมดเลย
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -36,8 +37,17 @@ func (t *TodoHandler) NewTask(c *gin.Context) {
 		})
 		return
 	}
+	// ถ้า bind ข้อมูลแล้วไม่มีปัญหา มันจะไปทำงานในบรรทัดถัดไป
 
-	// ถ้าข้างบน bind ข้อมูลแล้วไม่มีปัญหา มันจะไปทำงานในบรรทัดถัดไป
+	if todo.Title == "sleep" {
+
+		transactionID := c.Request.Header.Get("TransactionID")
+		aud, _ := c.Get("aud")
+		log.Println(transactionID, aud, "NOT allowed")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "NOT ALLOWED",
+		})
+	}
 
 	// ทำการ create ของ แล้วยัดใส่ todo
 	r := t.db.Create(&todo) // creaet จะคืน result มาตัวนึง ซึ่ง result จะมี error และถ้ามันไม่เท่ากับ nil ก็ handle กันไป

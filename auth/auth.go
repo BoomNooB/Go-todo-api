@@ -14,7 +14,11 @@ func AccessToken(signature string) gin.HandlerFunc {
 
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, &jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(5 * time.Minute).Unix(),
+			Audience:  "Boom", //ของจริงอาจจะเป็น username หรืออย่างอื่น แต่ในตัวอย่าง hardcode ไปก่อน
+
 		})
+
+		// log.Println(token.Claims)
 
 		ss, err := token.SignedString([]byte(signature))
 		if err != nil {
